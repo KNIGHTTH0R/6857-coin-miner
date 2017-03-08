@@ -32,11 +32,16 @@ def solve_block(b):
 
     """
     d = b["difficulty"]
+    d_string = "0"*(d/4)  #Integer division!  Remainder thrown out
+
     b["nonce"] = rand_nonce(b["difficulty"])
     while True:
         b["nonce"] += 1
         h = hash_block_to_hex(b)
-        # TODO: verify PoW
+
+        #print h
+        if h[0:1] == d_string:
+            return
 
 def main():
     """
@@ -46,7 +51,7 @@ def main():
     We will construct a block dictionary and pass this around to solving and
     submission functions.
     """
-    block_contents = "cc"
+    block_contents = "aniokevu, mbelland"
     while True:
         #   Next block's parent, version, difficulty
         next_header = get_next()
