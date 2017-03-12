@@ -32,16 +32,18 @@ def solve_block(b):
 
     """
     d = b["difficulty"]
-    d_string = "0"*(d/4)  #Integer division!  Remainder thrown out
 
     b["nonce"] = rand_nonce(b["difficulty"])
-    while True:
+    start_time = time.time()
+
+    #keep trying this for 120 seconds
+    while (time.time()-start_time)<120:
         b["nonce"] += 1
         h = hash_block_to_hex(b)
-
         #print h
-        if h[0:1] == d_string:
-            return
+        if int(h, 16) < 1<<(256-d):
+            return True
+    return False
 
 def main():
     """
@@ -61,9 +63,11 @@ def main():
         #   Solve the POW
         print "Solving block..."
         print new_block
-        solve_block(new_block)
-        #   Send to the server
-        add_block(new_block, block_contents)
+
+        #if the block isn't solved, don't send it
+        if(solve_block(new_block)):
+            #   Send to the server
+            add_block(new_block, block_contents)
 
 def get_next():
     """
